@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>PROYECTO</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+
+  <script src="https://code.highcharts.com/stock/highstock.js"></script>
+  <script src="https://code.highcharts.com/stock/modules/data.js"></script>
+  <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+  <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+  <script src="https://code.highcharts.com/stock/modules/accessibility.js"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN"
+    crossorigin="anonymous"></script>
+  <style>
+    html,
+    body {
+      background-image: url('/Imagenes/page-background.svg');
+      min-height: 100vh;
+      background-size: auto;
+
+    }
+
+
+
+    .cardsEmpresasSeleccionadas {
+      min-height: 14em;
+      background-image: url(/Imagenes/card-background.svg);
+    }
+
+    .imagenesEmpresas {
+      cursor: pointer;
+      display: inline-block;
+      padding: 1em;
+      width: 220px;
+      height: 100px;
+    }
+
+
+
+
+    .contenedoresDragDrop {
+      min-height: 10em;
+      min-width: 10em;
+    }
+
+    .highcharts-figure,
+    .highcharts-data-table table {
+      min-width: 320px;
+      max-width: 800px;
+      margin: 1em auto;
+    }
+
+    #containerGrafica {
+      margin: auto;
+      margin-top: 20vh;
+      width: 80%;
+      height: 50%;
+    }
+
+    .highcharts-data-table table {
+      font-family: Verdana, sans-serif;
+      border-collapse: collapse;
+      border: 1px solid #ebebeb;
+      margin: 10px auto;
+      text-align: center;
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .highcharts-data-table caption {
+      padding: 1em 0;
+      font-size: 1.2em;
+      color: #555;
+    }
+
+    .highcharts-data-table th {
+      font-weight: 600;
+      padding: 0.5em;
+    }
+
+    .highcharts-data-table td,
+    .highcharts-data-table th,
+    .highcharts-data-table caption {
+      padding: 0.5em;
+    }
+
+    .highcharts-data-table thead tr,
+    .highcharts-data-table tr:nth-child(even) {
+      background: #f8f8f8;
+    }
+
+    .highcharts-data-table tr:hover {
+      background: #f1f7ff;
+    }
+
+    #formularioLogin {
+      z-index: 3;
+      background-color: rgba(161, 161, 161, 0.096);
+      display: flex;
+    }
+
+
+    .divAutentificacion {
+      position: absolute;
+      top: 100px;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 3;
+    }
+
+    .modalGrafica {
+      display: none;
+      position: fixed;
+      margin: auto;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: auto;
+      background-color: rgb(0, 0, 0);
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .formulariosAutentificacion {
+      position: relative;
+      z-index: 1;
+      border-color: black;
+      border-width: 2px;
+      border-radius: 1px;
+      max-width: 600px;
+      margin: 0 auto 100px;
+      padding: 45px;
+      text-align: center;
+      border-radius: 50px;
+      box-shadow: -11px 11px 22px #bebebe, 11px -11px 22px #797979;
+    }
+
+    #divRegistrarID {
+      position: relative;
+      z-index: 1;
+      background: #8b9bad;
+      border-color: black;
+      border-width: 2px;
+      border-radius: 1px;
+      max-width: 600px;
+      margin: 0 auto 100px;
+      padding: 45px;
+      text-align: center;
+      border-radius: 50px;
+      box-shadow: -11px 11px 22px #bebebe, 11px -11px 22px #797979;
+    }
+
+    .formulariosAutentificacion input {
+      outline: 0;
+      background: #e0e0e0;
+      width: 100%;
+      border: 0;
+      border-radius: 5px;
+      margin: 0 0 15px;
+      padding: 15px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    .formulariosAutentificacion input:focus {
+      background: #e0e0e0;
+    }
+
+    .formulariosAutentificacion button {
+      outline: 0;
+      background: #e0e0e0;
+      width: 100%;
+      border: 0;
+      border-radius: 5px;
+      padding: 15px;
+      font-size: 14px;
+      -webkit-transition: all 0.3 ease;
+      transition: all 0.3 ease;
+      cursor: pointer;
+    }
+
+
+    .blur {
+      filter: blur(10px);
+      -webkit-filter: blur(10px);
+    }
+  </style>
+
+</head>
+
+<body onload='fIniciarSesion()'>
+  <div class="container-fluid text-center" id="contenedor">
+    <div class="row py-1">
+      <div class="mx-auto text-white" id="divNombreUsuario"></div>
+      <div class="col-4 mx-auto" id="divBotonCerrarSesion"><button id="salir" style="display: none;">o</button><img
+          class="img-fluid" src="Imagenes/ibex35.png" alt="Logo Ibex35"></div>
+    </div>
+    <div class="row">
+      <div id="divLogosEmpresas"
+        class="contenedoresDragDrop bg-dark-subtle border border-dark col-lg-8 col-md-8 col-md-10 col-sm-10 col-12 mx-auto">
+        <img class="imagenesEmpresas" id="Inditex" src="Imagenes/Inditex.png" alt="Logo de Inditex">
+        <img class="imagenesEmpresas" id="Santander" src="Imagenes/Santander.png" alt="Logo de Santander">
+        <img class="imagenesEmpresas" id="BBVA" src="Imagenes/BBVA.png" alt="Logo de BBVA">
+        <img class="imagenesEmpresas" id="Caixa" src="Imagenes/Caixa.png" alt="Logo de Caixa">
+        <img class="imagenesEmpresas" id="Cellnex" src="Imagenes/Cellnex.png" alt="Logo de Cellnex">
+        <img class="imagenesEmpresas" id="Repsol" src="Imagenes/Repsol.png" alt="Logo de Repsol">
+        <img class="imagenesEmpresas" id="Iberdrola" src="Imagenes/Iberdrola.png" alt="Logo de Iberdrola">
+        <img class="imagenesEmpresas" id="Ferrovial" src="Imagenes/Ferrovial.png" alt="Logo de Ferrovial">
+        <img class="imagenesEmpresas" id="Naturgy" src="Imagenes/Naturgy.png" alt="Logo de Naturgy">
+        <img class="imagenesEmpresas" id="Telefonica" src="Imagenes/Telefonica.png" alt="Logo de Telefonica">
+      </div>
+    </div>
+    <div class="row py-3">
+      <div id="divImagenesEmpresas"
+        class="contenedoresDragDrop px-1 col-lg-8 col-md-8 col-md-10 col-sm-10 col-12 mx-auto border border-dark bg-dark-subtle">
+      </div>
+    </div>
+    <div class="row">
+
+    </div>
+    <div id="divCartasEmpresasSeleccionada" class="row">
+    </div>
+    <div class="col-12 py-5" style="display: none;" id="divBotonesMostrarSetup">
+      <button type="button" class="text-white btn btn-secondary btn-lg btn-outline-dark d-none"
+        id="botonSetup">Setup</button>
+      <button type="button" class="text-white btn btn-secondary btn-lg btn-outline-dark d-inline"
+        id="botonMostrar">Mostrar</button>
+    </div>
+  </div>
+
+
+  <div class="divAutentificacion" id="formularioLogin" style="display: none;">
+    <div class="formulariosAutentificacion bg-secondary" id="formulariosAutentificacionID">
+      <p class="text-white">Inicia sesión </p>
+      <p id="error"></p>
+      <form id="formularioLoginID">
+        <label class="text-white" for="emailLogin">Email</label>
+        <input type="email" placeholder="email" name="email" id="emailLogin" required>
+        <label class="text-white" for="passwordLogin">Password</label>
+        <input type="password" id="passwordLogin" placeholder="password" name="password" pattern="^[a-zA-Z0-9]{6,}$" required>
+        <label class="text-white" for="enviarLogin">Enviar</label>
+        <input name="enviar" id="enviarLogin" type="submit" value="Login">
+        <p id="inicio"></p>
+      </form>
+      <button id="botonRegistrarse">Registrar</button>
+    </div>
+
+    <div id="formularioRegistrarID" style="display: none;">
+      <form class="formulariosAutentificacion bg-secondary" id="divRegistrarID">
+        <p class="text-white">Registrate</p>
+        <p id="registrado"></p>
+        <label class="text-white" for="name">nombre</label>
+        <input name="name" id="name" type="text" placeholder="nombre">
+        <label class="text-white" for="emailRegistro">Email</label>
+        <input name="email" id="emailRegistro" type="email" placeholder="email" required>
+        <label class="text-white" for="passwordRegistro">Contraseña</label>
+        <input name="password" id="passwordRegistro" type="password" pattern="^[a-zA-Z0-9]{6,}$" placeholder="contraseña">
+        <label class="text-white" for="enviarRegistro">Enviar</label>
+        <input name="enviar" id="enviarRegistro" type="submit" value="Registrar">
+      </form>
+    </div>
+  </div>
+
+  <div id="modalGraficaID" class="modalGrafica">
+    <div id="containerGrafica">
+    </div>
+  </div>
+
+</body>
+<script>
+
+  //Iniciar sesion
+  function fIniciarSesion() {
+
+    setInterval(function () {
+      if (!localStorage.getItem("token")) {
+        //Si no existe registro de token en el localStorage muestra el formulario de inicio de sesión
+        let divf = document.getElementById("formularioLogin");
+        divf.style.display = "block";
+        document.querySelector("#botonRegistrarse").addEventListener("click", function () {
+          document.querySelector("#formulariosAutentificacionID").style.display = "none";
+          document.querySelector("#formularioRegistrarID").style.display = "block";
+
+        });
+        let cont = document.getElementById("contenedor");
+        cont.classList.add("blur");
+      }
+    }, 1000)
+
+    if (localStorage.getItem("token")) {
+      //En caso de que exista un token muestra el nombre de usuario
+      var divNombreUsuario = document.getElementById("divNombreUsuario");
+      var user = localStorage.getItem("usuario");
+      divNombreUsuario.innerHTML = "<h2 class='text-white'> Está utilizando el usuario" + " " + user + "</h2>"
+
+      var ibex = document.getElementById("divBotonCerrarSesion");
+      ibex.innerHTML = "<button class='text-white btn btn-secondary btn-lg btn-outline-dark' id='botonCerrarSesion'>Cerrar Sesión</button>";
+      //Al cerrar sesión se borra el token
+
+      var botonLogout = document.getElementById("botonCerrarSesion");
+      botonLogout.addEventListener("click", function () {
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("usuario");
+        location.reload();
+
+      })
+
+      document.getElementById("divBotonesMostrarSetup").style.display = "block";
+      fObtenerEmpresasGuardadas();
+      fConsultarHistorico();
+    }
+  }
+
+  //Iniciar sesión
+  formularioLogin = document.getElementById('formularioLoginID');
+  formularioLogin.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    var datal = new FormData(formularioLogin);
+    var userData = {
+      email: datal.get("email"),
+      password: datal.get("password")
+    };
+    //Guarda los datos del usuario y los envía a la api
+    try {
+      var controller = new AbortController();
+      var timeoutId = setTimeout(() => controller.abort(), 5000);
+      fetch('http://192.168.88.21/api/login', {
+        method: 'POST',
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData)
+
+      })
+        .then(response => response.json())
+        .then(response => {
+          responseGlobal = response;
+
+          var error = document.getElementById("error");
+          var inicio = document.getElementById("inicio");
+          localStorage.removeItem("usuario");
+          if (response.status === "success") {
+            //Con este código creo los registros necesarios en localstorage
+            let token = response.authorisation.token;
+            let usuario = response.user.name;
+            let email = response.user.email
+            localStorage.setItem("token", token);
+            localStorage.setItem("usuario", usuario);
+            localStorage.setItem("email", email);
+            error.innerHTML = "";
+            inicio.innerHTML = "Usuario encontrado, iniciando sesion...";
+            inicio.style.color = "green";
+            location.reload();
+
+          } else {
+            error.innerHTML = "La contraseña introducida no es válida";
+            error.style.color = "red";
+          }
+        })
+        .catch(err => console.error(err));
+    } catch (e) {
+      if (e.name === "AbortError") {
+        alert('El servidor no ha respondido a tiempo')
+      } else {
+        console.log(`Type: ${e.name}, Message: ${e.message}`);
+      }
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  });
+
+  //Código para registrar un usuario
+  formularioR = document.getElementById('divRegistrarID');
+  formularioR.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var data = new FormData(formularioR);
+    try {
+      var controller = new AbortController();
+      var timeoutId = setTimeout(() => controller.abort(), 5000);
+      fetch('http://192.168.88.21/api/register', {
+        method: 'POST',
+        signal: controller.signal,
+        body: data
+      })
+        .then(response => response.json())
+        .then(response => console.log(response))
+        .catch(err => console.error(err));
+      location.reload();
+    } catch (e) {
+      if (e.name === "AbortError") {
+        alert('El servidor no ha respondido a tiempo')
+      } else {
+        console.log(`Type: ${e.name}, Message: ${e.message}`);
+      }
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  });
+
+//Funcion para obtener los datos haciendo una llamada a la api
+  async function fConsultarDatos() {
+    try {
+      var controller = new AbortController();
+      var timeoutId = setTimeout(() => controller.abort(), 5000);
+      var respuesta = await fetch('http://192.168.88.21/api/datos', {
+        method: 'GET',
+        signal: controller.signal,
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          'Content-Type': 'application/json',
+        }
+      });
+      //Cambio actualizo el valor de la cotización de cada empresa
+      datos = await respuesta.json();
+      for (let i = 0; i < empresas.length; i++) {
+        for (let j = 0; j < datos.length; j++) {
+          if (empresas[i].id === datos[j].nombres) {
+            //Durante 3 segundos cambio el color de las cotizaciones a rojo en caso de que se haya producido una bajada y a verde si ha subido. En caso de que no se produzca un cambio se queda en negro
+            //Debido a que redondeo el resultado final para no tener más de dos decimales, en ocasiones un valor cambia de color aunque no haya cambio aparente al estar comparando el valor original
+            //de la base de datos y el valor redondeado, por eso hago una suma o resta de un valor muy pequeño. De esta manera me aseguro de que solo se cambie de color cuando realmente ha cambiado de valor
+            if (parseFloat(document.getElementById(empresas[i].id + 'Valor').innerHTML) - 0.001 > datos[j].valores) {
+              $('#' + empresas[i].id + 'Valor').css('color', 'red')
+            } else if (parseFloat(document.getElementById(empresas[i].id + 'Valor').innerHTML) + 0.001 < datos[j].valores) {
+              $('#' + empresas[i].id + 'Valor').css('color', 'green')
+            } else {
+              $('#' + empresas[i].id + 'Valor').css('color', 'black')
+            }
+            //Redondeo el valor para que no se impriman más de 2 decimales
+            document.getElementById(empresas[i].id + 'Valor').innerHTML = datos[j].valores.toFixed(2);
+          }
+
+        }
+      }
+      //utilizando una promesa cambio el color a negro después de 3 segundos
+      sleep(3000).then(() => {
+        $('.valor-texto').css('color', 'black');
+      });
+    } catch (e) {
+      if (e.name === "AbortError") {
+        alert('El servidor no ha respondido a tiempo')
+      } else {
+        console.log(`Type: ${e.name}, Message: ${e.message}`);
+      }
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+
+  //Hago consultas a la api cada 60 segundos
+  setInterval(function () {
+    fConsultarDatos();
+  }, 60000);
+
+ //Después de iniciar sesión (o al entrar en la página si hay un token guardado) se comprueba el localStorage y en caso de que se tengan datos de las empresas que 
+ //ese usuario está interesado se mostraran en pantalla sus cartas con el botón de mostar grafico
+  function fObtenerEmpresasGuardadas() {
+    localEmail = localStorage.getItem('email');
+    if (localStorage.getItem(localEmail + ' empresasGuardadas') != null && localStorage.getItem(localEmail + ' empresasGuardadas') != '') {
+      empresasSplit = localStorage.getItem(localEmail + ' empresasGuardadas').split(',')
+      for (i = 0; i < empresasSplit.length; i++) {
+        $('#divImagenesEmpresas').append($('<img class="imagenesEmpresas ui-draggable ui-draggable-handle" id="' + empresasSplit[i] + '" src="Imagenes/' + empresasSplit[i] + '.png" alt="Logo de ' + empresasSplit[i] + '">'));
+      }
+      fCrearCardsEmpresas()
+      //Después de mostrar las empresas guardadas en localstorage elimino los logos del div droppable
+      $('#divImagenesEmpresas').empty();
+    }
+  }
+
+  //Después de iniciar sesion hago una consulta a la api para recibir los datos del historico de cotizaciones. Estos datos los utilizo después al crear las graficas
+  async function fConsultarHistorico() {
+    try {
+      var controller = new AbortController();
+      var timeoutId = setTimeout(() => controller.abort(), 5000);
+      await fetch('http://192.168.88.21/api/obtenerHistorico', {
+        method: 'GET',
+        signal: controller.signal,
+        headers: {
+          'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          'Content-Type': 'application/json',
+        }
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          datosHistorico = data;
+        });
+    } catch (e) {
+      if (e.name === "AbortError") {
+        alert('El servidor no ha respondido a tiempo')
+      } else {
+        console.log(`Type: ${e.name}, Message: ${e.message}`);
+      }
+    } finally {
+      clearTimeout(timeoutId);
+    }
+  }
+  $('#botonSetup').click(function () {
+    $('#divCartasEmpresasSeleccionada').empty();
+    $('#divLogosEmpresas').css('display', 'block');
+    $('#divImagenesEmpresas').css('display', 'block');
+
+    $('#botonMostrar').removeClass('d-none');
+    $('#botonMostrar').addClass('d-inline');
+    $('#botonSetup').addClass('d-none');
+
+  });
+
+  $('#botonMostrar').click(fCrearCardsEmpresas);
+  function fCrearCardsEmpresas() {
+    fConsultarDatos();
+    $('#botonSetup').removeClass('d-none');
+    $('#botonMostrar').removeClass('d-inline');
+    $('#botonMostrar').addClass('d-none');
+    empresas = $('#divImagenesEmpresas').children('img');
+    empresasParaGuardar = new Array();
+    for (i = 0; i < empresas.length; i++) {
+      $('#divCartasEmpresasSeleccionada').append('<div id=' + empresas[i].id + ' class="col-xl-3 col-lg-3 col-md-4 col-sm-6 mx-auto px-3 py-3"><div class="card bg-dark-subtle cardsEmpresasSeleccionadas"><img src="imagenes/' + empresas[i].id + '.png" class="card-img-top h-25 w-75 mx-auto" alt="Logo de' + empresas[i].id + '"><div class="card-body"><h2 id=' + empresas[i].id + 'Valor class="card-title valor-texto"> "**"</h2><button id="' + empresas[i].id + '" onClick="mostrarModal(this.id)" class="summonModal btn btn-secondary">Mostrar gráfico</button></div></div></div>');
+      empresasParaGuardar[i] = empresas[i].id;
+    }
+    $('#divLogosEmpresas').css("display", "none");
+    $('#divImagenesEmpresas').css("display", "none");
+    localStorage.setItem(localEmail + ' empresasGuardadas', empresasParaGuardar);
+    fMostrarrModal();
+  }
+
+
+  $('.imagenesEmpresas').draggable({
+    helper: 'clone',
+  });
+
+  $('#divImagenesEmpresas').droppable({
+    accept: '.imagenesEmpresas',
+    hoverClass: 'hovering',
+    drop: function (ev, ui) {
+      {
+        ui.draggable.detach();
+        $(this).append(ui.draggable);
+      }
+
+    }
+  });
+
+  $('#divLogosEmpresas').droppable({
+    accept: '.imagenesEmpresas',
+    hoverClass: 'hovering',
+    drop: function (ev, ui) {
+      ui.draggable.detach();
+      $(this).append(ui.draggable);
+    }
+  });
+  async function mostrarModal(empresa) {
+    datosHistoricoEmpresa = [];
+    for (let i = 0; i < datosHistorico.length; i++) {
+      if (empresa === datosHistorico[i].nombres) {
+        datosHistoricoEmpresa.push(datosHistorico[i].valores);
+      }
+    }
+    d = new Date();
+    d.setFullYear(d.getFullYear() - 1);
+    testFecha = new Date(d);
+    Highcharts.stockChart('containerGrafica', {
+
+      rangeSelector: {
+        selected: 1
+      },
+
+      title: {
+        text: empresa
+      },
+      xAxis: {
+        type: 'datetime',
+        labels: {
+          format: '{value:%Y-%m-%d}',
+          rotation: 45,
+          align: 'left'
+        }
+      },
+      yAxis: {
+        id: 'y_axis_0'
+      },
+      series: [{
+        type: 'line',
+        data: datosHistoricoEmpresa,
+        yAxis: 1,
+        tooltip: {
+          valueDecimals: 2
+        },
+
+        pointStart: Date.parse(testFecha),
+        pointInterval: 24 * 3600 * 1000,
+        yAxis: 'y_axis_0'
+      }]
+    });
+    modal.style.display = 'block';
+  }
+
+  function fMostrarrModal() {
+    modal = document.getElementById("modalGraficaID");
+    // Obtener el botón que abre el modal
+    // Obtener el elemento <span> que cierra el modal
+    var span = document.getElementsByClassName("close")[0];
+    // Cuando el usuario haga clic en el botón, abra el modal
+    // Cuando el usuario haga clic fuera del modal, cierre el modal
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+
+      }
+    }
+  }
+
+  function sleep(time) {
+    return new Promise((resolve) => setTimeout(resolve, time));
+  }
+</script>
+
+</html>
